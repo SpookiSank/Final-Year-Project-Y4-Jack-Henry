@@ -36,6 +36,9 @@ public class LevelManagement : Singleton <LevelManagement>
     public Dictionary<Point, TileScript> Tiles { get; set; }
 
 
+
+    private Point MapSize;
+
     void Start()
     {
         CreateLevel();
@@ -55,7 +58,8 @@ public class LevelManagement : Singleton <LevelManagement>
         Tiles = new Dictionary<Point, TileScript>();
 
         string[] mapData = ReadLevelTxt();
-     
+
+        MapSize = new Point(mapData[0].ToCharArray().Length, mapData.Length);
 
         int mapXSize = mapData[0].ToCharArray().Length;
         int mapYSize = mapData.Length;
@@ -114,4 +118,12 @@ public class LevelManagement : Singleton <LevelManagement>
     }
         
        
+
+    public bool Inbounds(Point position)
+    {
+        return position.X >= 0 && position.Y >= 0 && position.X < MapSize.X && position.Y < MapSize.Y;
+    }
+
+
+
 }
