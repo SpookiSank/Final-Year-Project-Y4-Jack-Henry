@@ -8,7 +8,7 @@ public class GameManagment : Singleton<GameManagment>
 {
     public TowerButton ClickButton { get; set; }
 
-   
+    public ObjectPool Pool{ get; set; }
 
     // Start is called before the first frame update
 
@@ -30,9 +30,18 @@ public class GameManagment : Singleton<GameManagment>
     [SerializeField]
     private Text byteText;
 
+
+    private void Awake()
+    {
+
+
+        Pool = GetComponent<ObjectPool>();
+    }
+
+
     void Start()
     {
-        Bytes = 35;
+        Bytes = 10000;
     }
 
     // Update is called once per frame
@@ -68,6 +77,46 @@ public class GameManagment : Singleton<GameManagment>
             Hover.Instance.Deactivate();
         }
 
+
+    }
+
+    public void StartWave()
+    {
+
+        StartCoroutine(SpawnWave());
+
+
+    }
+
+    private IEnumerator SpawnWave()
+    {
+
+        LevelManagement.Instance.GeneratePath();
+        int monsterIndex = Random.Range(0, 4);
+
+        string type = string.Empty;
+
+
+        switch (monsterIndex)
+        {
+
+            case 0:
+                type = "BlueMonster";
+                break;
+            case 1:
+                type = "RedMonster";
+                break;
+            case 2:
+                type = "GreenMonster";
+                break;
+            case 3:
+                type = "PurpleMonster";
+                break;
+        }
+
+       Viruses virus = Pool.GetObject(type).GetComponent<Viruses>();
+        virus.Spawn();
+                yield return new WaitForSeconds(2.5f);
 
     }
 }

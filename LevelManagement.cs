@@ -31,6 +31,23 @@ public class LevelManagement : Singleton <LevelManagement>
     private GameObject bluePortalPre;
 
 
+
+    public VirusPortal BluePortal { get; set; }
+
+    private Stack<Node> finalPath;
+    public Stack<Node> FinalPath
+    {
+        get
+        {
+            if(finalPath == null)
+            {
+                GeneratePath();
+            }
+            return new Stack<Node>(new Stack<Node>(finalPath));
+        }
+      
+    }
+
     [SerializeField]
     private GameObject redPortalPre;
     public Dictionary<Point, TileScript> Tiles { get; set; }
@@ -111,7 +128,10 @@ public class LevelManagement : Singleton <LevelManagement>
     private void SpawnPortal()
     {
         blueSpawn = new Point(0, 0);
-        Instantiate(bluePortalPre, Tiles[blueSpawn].GetComponent<TileScript>().WorldPosition, Quaternion.identity);
+        GameObject tmp = (GameObject)Instantiate(bluePortalPre, Tiles[blueSpawn].GetComponent<TileScript>().WorldPosition, Quaternion.identity);
+
+        BluePortal = tmp.GetComponent<VirusPortal>();
+        BluePortal.name = "BluePortal";
 
         redSpawn = new Point(11, 6);
         Instantiate(redPortalPre, Tiles[redSpawn].GetComponent<TileScript>().WorldPosition, Quaternion.identity);
@@ -125,5 +145,8 @@ public class LevelManagement : Singleton <LevelManagement>
     }
 
 
-
+    public void GeneratePath()
+    {
+        finalPath = Star.GetPath(blueSpawn, redSpawn);
+    }
 }
